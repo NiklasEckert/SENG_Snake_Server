@@ -1,0 +1,19 @@
+{
+  "name": "snakeserver",
+  "version": "0.0.1",
+  "description": "The server for the multiplayer of the snake game, which was created as part of the SENG lecture of the TH-Bingen in SoSe 21",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NiklasEckert/SENG_Snake_Server.git"
+  },
+  "author": "Niklas Eckert",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NiklasEckert/SENG_Snake_Server/issues"
+  },
+  "homepage": "https://github.com/NiklasEckert/SENG_Snake_Server#readme"
+}
