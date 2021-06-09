@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/NiklasEckert/SENG_Snake_Server/issues"
   },
-  "homepage": "https://github.com/NiklasEckert/SENG_Snake_Server#readme"
+  "homepage": "https://github.com/NiklasEckert/SENG_Snake_Server#readme",
+  "dependencies": {
+    "socket.io": "^4.1.2"
+  }
 }
