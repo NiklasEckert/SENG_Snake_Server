@@ -14,13 +14,17 @@ let lobbyCount = 0;
 
 io.on("connection", socket => {
     console.log(`${socket.handshake.address} connected.`)
-    let player = new Player(socket, "name")
+    let player = new Player(socket, "not_received")
     players.push(player)
+
+    socket.on("client:sendPlayerName", playerName => {
+        player.playerName = playerName
+    })
 
     socket.on("client:createLobby", options => {
         lobbyCount++
         const lobbyCode = generateLobbyCode()
-        let lobby = new Lobby(lobbyCode, options)
+        let lobby = new Lobby(lobbyCode, JSON.parse(options))
         lobbies.push(lobby)
         console.log(lobby)
         socket.emit("server:lobbyCreated", lobbyCode)
@@ -37,6 +41,8 @@ io.on("connection", socket => {
 
         console.log(`${player.socket.handshake.address} / ${player.playerName} disconnecting.`)
     })
+
+    socket.emit("server:requestPlayerName")
 })
 
 function generateLobbyCode() {
