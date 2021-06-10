@@ -37,7 +37,7 @@ Options:
 
 > #### client:joinLobby
 > Description: Join an existing lobby. Will fire the ***lobby:joined*** event on success.<br>
-> Parameter: lobbyCode: String
+> Parameter: lobbyCode: String<br>
 > Thrown application errors: 30001, 30002
 
 
