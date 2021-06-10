@@ -33,10 +33,11 @@ Options:
 ### Listening
 > #### client:createLobby
 > Description: Create a new lobby with a unique code. Will fire the ***server:lobbyCreated*** event.<br> 
-> Parameter: 
+> Parameter: { playerCount: pc: Integer, size: { x: Int, y: Int } }
 
 > #### client:joinLobby
 > Description: Join an existing lobby. Will fire the ***lobby:joined*** event on success.<br>
 > Parameter: lobbyCode: String
+> Thrown application errors: 30001, 30002
 
 
