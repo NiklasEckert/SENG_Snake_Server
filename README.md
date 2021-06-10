@@ -27,10 +27,18 @@ Options:
 > Description: Will be sent, then a player successfully joined a server.<br>
 > Return: undefined
 
+> #### server:requestPlayerName
+> Description: Will be sent at the beginning of the connection.<br>
+> Return: undefined
+
 > #### server:lobbyCreated
 > Description: Will be sent, then a client successfully created a lobby.<br>
 > Return: lobbyCode: String
 ### Listening
+> #### client:sendPlayerName
+> Description: Send the name of the player to the server.<br>
+> Parameter: playerName: String
+
 > #### client:createLobby
 > Description: Create a new lobby with a unique code. Will fire the ***server:lobbyCreated*** event.<br> 
 > Parameter: { playerCount: pc: Integer, size: { x: Int, y: Int } }
