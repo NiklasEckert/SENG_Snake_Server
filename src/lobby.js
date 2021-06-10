@@ -15,7 +15,7 @@ module.exports = class Lobby {
     }
 
     joinLobby(player) {
-        if (this.#players.length >= this.options.lobbySize) {
+        if (this.#players.length >= this.options.playerCount) {
             player.socket.emit("application_error", {
                 code: 30001,
                 message: "Lobby is already full"
