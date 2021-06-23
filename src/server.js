@@ -17,10 +17,6 @@ io.on("connection", socket => {
     let player = new Player(socket, "not_received")
     players.push(player)
 
-    socket.on("client:sendPlayerName", playerName => {
-        player.playerName = playerName
-    })
-
     socket.on("client:createLobby", options => {
         lobbyCount++
         const lobbyCode = generateLobbyCode()
@@ -30,9 +26,11 @@ io.on("connection", socket => {
         socket.emit("server:lobbyCreated", lobbyCode)
     })
 
-    socket.on("client:joinLobby", lobbyCode => {
+    socket.on("client:joinLobby", (lobbyCode, playerName) => {
+        player.playerName = playerName
         let lobby = lobbies.find(lobby => lobby.code === lobbyCode)
-        lobby.joinLobby(player)
+        if (lobby)
+            lobby.joinLobby(player)
     })
 
     socket.on("disconnect", () => {
@@ -41,8 +39,6 @@ io.on("connection", socket => {
 
         console.log(`${player.socket.handshake.address} / ${player.playerName} disconnecting.`)
     })
-
-    socket.emit("server:requestPlayerName")
 })
 
 function generateLobbyCode() {
