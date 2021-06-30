@@ -51,6 +51,9 @@ module.exports = class Lobby {
 
     async #startGame() {
         let gameState = this.#createFirstGameState()
+        this.#players.forEach(player => {
+            player.socket.emit("server:sendGameState", gameState)
+        })
         while (gameState.gameIsRunning) {
             gameState = this.#createNextGameState()
             await this.#sleep(1000)
@@ -60,6 +63,9 @@ module.exports = class Lobby {
     #createFirstGameState() {
         const newGameState = new GameState(this.#snakes, true)
         this.#gameStates.push(newGameState)
+        this.#players.forEach(player => {
+            player.socket.emit("server:sendGameState", newGameState)
+        })
         return newGameState
     }
 
