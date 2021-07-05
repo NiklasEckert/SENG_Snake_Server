@@ -2,16 +2,32 @@ const Direction = require('./Direction')
 const SnakeHead = require("./SnakeHead");
 const SnakePart = require("./SnakePart");
 
-module.exports = class Snake {
+/** Class representing a snake. */
+class Snake {
 
+    /** @member {boolean} - Indicates if a player has lost */
     #playerLost
 
+    /**
+     * Create a snake.
+     * @param {String} snakeID - The ID of the snake.
+     * @param {String} snakeColor - The color of the snake.
+     * @param {{posX: Number, posY: Number}} startPosition - Starting position of the snake.
+     */
     constructor(snakeID, snakeColor, startPosition) {
+        /** @member {String} - The unique ID of the snake (equals player name) */
         this.snakeID = snakeID
+        /** @member {String} - Hexcode of the color of the snake. */
         this.snakeColor = snakeColor
 
+        /**
+         * The head of the snake.
+         * Gets updated every time the snake is moved.
+         * @member {SnakeHead}
+         */
         this.snakeHead = new SnakeHead(startPosition.posX, startPosition.posY, Direction.SOUTH)
 
+        /** @member {SnakePart[]} - The parts of the snake. */
         this.snakeParts = []
         this.snakeParts.push(this.snakeHead)
         for (let i = 1; i <= 3; i++) {
@@ -21,6 +37,11 @@ module.exports = class Snake {
         this.#playerLost = false
     }
 
+    /**
+     * Move the snake into a direction and extend it by one part.
+     * @param direction {Direction} - The direction the snake should move (@link Direction).
+     * @param extend {boolean} - Set true if the snake should extend itself by one.
+     */
     moveSnake(direction, extend) {
         if (this.#playerLost)
             return
@@ -62,11 +83,19 @@ module.exports = class Snake {
             this.snakeParts.splice(this.snakeParts.length - 1)
     }
 
-    get getPlayerLost() {
+    /**
+     * Returns true then the player has lost.
+     * @returns {boolean}
+     */
+    get playerLost() {
         return this.#playerLost
     }
 
-    set setPlayerLost(playerLost) {
+    /**
+     * Set if the player hast lost.
+     * @param playerLost {boolean}
+     */
+    set playerLost(playerLost) {
         this.#playerLost = playerLost
         if (this.#playerLost) {
             this.snakeParts = undefined
@@ -74,3 +103,5 @@ module.exports = class Snake {
         }
     }
 }
+
+module.exports = Snake

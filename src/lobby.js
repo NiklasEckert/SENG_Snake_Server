@@ -1,23 +1,53 @@
 const Snake = require("./Snake");
 const GameState = require("./GameState");
+
+/**
+ * Enum representing the status of the lobby.
+ *
+ * @readonly
+ * @enum {Number}
+ * @type {{RUNNING: number, WAITING: number, FINISHED: number}}
+ */
 const LobbyStatus = {
+    /** The lobby is waiting for new players */
     WAITING: 0,
+    /** The lobby is running */
     RUNNING: 1,
+    /** The lobby has finished */
     FINISHED: 2
 }
 module.exports = LobbyStatus
 
-module.exports = class Lobby {
+/**
+ * Class representing a game lobby.
+ */
+class Lobby {
     #players = []
     #status = LobbyStatus.WAITING
     #gameStates = []
     #snakes = []
+    /** @member {String} - The unique code of the lobby */
+    code
+    /** @member {{playerCount: Number, size: { x: Number, y: Number } }} - A object that holds all optional parameters to create the lobby */
+    options
 
+    /**
+     * Create a lobby.
+     *
+     * @param code {String} - The unique code of the lobby.
+     * @param options {{playerCount: Number, size: { x: Number, y: Number } }} - Optional parameters to create a lobby.
+     */
     constructor(code, options) {
         this.code = code
         this.options = options
     }
 
+    /**
+     * Join a lobby.
+     * When the number of players has been reached, the game starts immediately.
+     *
+     * @param player {Player} - The player that wants to join.
+     */
     joinLobby(player) {
         if (this.#players.length >= this.options.playerCount) {
             player.socket.emit("application_error", {
@@ -49,6 +79,12 @@ module.exports = class Lobby {
             this.#startGame()
     }
 
+    /**
+     * Starts the game.
+     *
+     * @async
+     * @returns {Promise<void>}
+     */
     async #startGame() {
         console.log(`Lobby ${this.code} started...`)
         this.#status = LobbyStatus.RUNNING
@@ -74,6 +110,11 @@ module.exports = class Lobby {
         })
     }
 
+    /**
+     * Creates the first GameState of the lobby.
+     *
+     * @returns {GameState}
+     */
     #createFirstGameState() {
         const newGameState = new GameState(this.#snakes, true)
         this.#gameStates.push(newGameState)
@@ -82,7 +123,7 @@ module.exports = class Lobby {
 
     #createNextGameState() {
         this.#players.forEach(player => {
-            player.snake.moveSnake(player.direction, this.#gameStates.length % 5 == 0)
+            player.snake.moveSnake(player.direction, this.#gameStates.length % 5 === 0)
         })
 
         this.#snakes.forEach(snake => {
@@ -141,3 +182,5 @@ module.exports = class Lobby {
     }
 
 }
+
+module.exports = Lobby
