@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "node test/servertest.js"
+    "test": "node test/servertest.js",
+    "docs": "jsdoc src -r -R README.md -p -d docs"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
     "nodemon": "^2.0.7",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.7"
   }
 }
