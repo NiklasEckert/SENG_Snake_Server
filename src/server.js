@@ -22,11 +22,14 @@ io.on("connection", socket => {
         const lobbyCode = generateLobbyCode()
         let lobby = new Lobby(lobbyCode, JSON.parse(options))
         lobbies.push(lobby)
-        console.log(lobby)
+        console.log(`Lobby ${lobbyCode} created ...`)
         socket.emit("server:lobbyCreated", lobbyCode)
     })
 
     socket.on("client:joinLobby", (lobbyCode, playerName) => {
+        if (lobbies.find(lobby => lobby.players.find(lobbyPlayer => lobbyPlayer === player)))
+            return
+
         player.playerName = playerName
         let lobby = lobbies.find(lobby => lobby.code === lobbyCode)
         if (lobby)
@@ -44,6 +47,16 @@ io.on("connection", socket => {
 function generateLobbyCode() {
     return `lobby:${lobbyCount}`
 }
+
+// setInterval(() => {
+//     const finishedLobbies = lobbies.filter(lobby => lobby.status === 2)
+//     // console.log(finishedLobbies)
+//
+//     // for (const lobbyKey in lobbies.filter(lobby => lobby.status === 2)) {
+//     //     console.log(`Removed lobby ${lobbyKey}`)
+//     //     lobbies.splice(lobbies.findIndex(l => l.code === lobbyKey.code), 1)
+//     // }
+// }, 5000)
 
 httpServer.listen(PORT, () => {
     console.log(`Snake-Server is listening on port ${PORT}`)
