@@ -50,39 +50,50 @@ module.exports = class Lobby {
     }
 
     async #startGame() {
+        console.log(`Lobby ${this.code} started...`)
+        this.#status = LobbyStatus.RUNNING
         let gameState = this.#createFirstGameState()
+        this.#sendGameStateToAllPlayers(gameState)
+        while (gameState.gameIsRunning) {
+            await this.#sleep(1000)
+            gameState = this.#createNextGameState()
+            this.#sendGameStateToAllPlayers(gameState)
+        }
+        this.#status = LobbyStatus.FINISHED
+        console.log(`Lobby ${this.code} finished`)
+    }
+
+    /**
+     * Sends a GameState to all players of the lobby.
+     *
+     * @param gameState {GameState} - The GameState that should be send.
+     */
+    #sendGameStateToAllPlayers(gameState) {
         this.#players.forEach(player => {
             player.socket.emit("server:sendGameState", gameState)
         })
-        while (gameState.gameIsRunning) {
-            gameState = this.#createNextGameState()
-            await this.#sleep(1000)
-        }
     }
 
     #createFirstGameState() {
         const newGameState = new GameState(this.#snakes, true)
         this.#gameStates.push(newGameState)
-        this.#players.forEach(player => {
-            player.socket.emit("server:sendGameState", newGameState)
-        })
         return newGameState
     }
 
     #createNextGameState() {
         this.#players.forEach(player => {
-            player.snake.moveSnake(player.direction)
+            player.snake.moveSnake(player.direction, this.#gameStates.length % 5 == 0)
         })
 
         this.#snakes.forEach(snake => {
             if (this.#hasCollisionWithOtherSnakes(snake, this.#snakes.filter(otherSnake => otherSnake !== snake)))
-                snake.setPlayerLost(true)
+                snake.playerLost = true
 
             if (this.#hasCollisionWithBounds(snake))
-                snake.setPlayerLost(true)
+                snake.playerLost = true
         })
 
-        const gameIsRunning = this.#snakes.filter(snake => !snake.playerLost).length > 1
+        const gameIsRunning = this.#snakes.filter(snake => !snake.playerLost).length > 0
         const newGameState = new GameState(this.#snakes, gameIsRunning)
 
         this.#gameStates.push(newGameState)
@@ -109,6 +120,24 @@ module.exports = class Lobby {
 
     #sleep(milliseconds) {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
+    /**
+     * Returns a array of all players of the lobby.
+     *
+     * @returns {Player[]}
+     */
+    get players() {
+        return this.#players
+    }
+
+    /**
+     * Returns the current status of the lobby.
+     *
+     * @returns {LobbyStatus|Number}
+     */
+    get status() {
+        return this.#status
     }
 
 }
