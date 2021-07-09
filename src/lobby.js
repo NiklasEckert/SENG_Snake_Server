@@ -180,7 +180,12 @@ class Lobby {
                 snake.playerLost = true
         })
 
-        const gameIsRunning = this.#snakes.filter(snake => !snake.playerLost).length > 0
+        let gameIsRunning
+        if (this.options.playerCount === 1) {
+            gameIsRunning = this.#snakes.filter(snake => !snake.playerLost).length > 0
+        } else {
+            gameIsRunning = this.#snakes.filter(snake => !snake.playerLost).length > 1
+        }
         const newGameState = new GameState(this.#snakes, gameIsRunning)
 
         this.#gameStates.push(newGameState)
