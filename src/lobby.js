@@ -210,6 +210,18 @@ class Lobby {
                snake.snakeHead.posY > this.options.size.y
     }
 
+    #hasCollisionWithItself(snake) {
+        if (snake.snakeHead == undefined || snake.snakeParts == undefined)
+            return
+
+        let collision = false
+        snake.snakeParts.filter(part => part !== snake.snakeHead).forEach(part => {
+            if (snake.snakeHead.posX === part.posX && snake.snakeHead.posY === part.posY)
+                collision = true
+        })
+        return collision
+    }
+
     #sleep(milliseconds) {
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
