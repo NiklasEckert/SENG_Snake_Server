@@ -49,7 +49,21 @@ class Lobby {
      * @param player {Player} - The player that wants to join.
      */
     joinLobby(player) {
+        /**
+         * Event that sends error messages to the client.
+         *
+         * @event lobby:application_error
+         * @property {Number} code - The error code.
+         * @property {Number} message - the error message.
+         */
+
         if (this.#players.length >= this.options.playerCount) {
+            /**
+             * Fires the error, that indicates whether the lobby is already full.
+             *
+             * @method
+             * @fires lobby:application_error
+             */
             player.socket.emit("application_error", {
                 code: 30001,
                 message: "Lobby is already full"
@@ -58,6 +72,12 @@ class Lobby {
         }
 
         if (this.#status !== LobbyStatus.WAITING) {
+            /**
+             * Fires the error, that indicates whether the lobby is already running.
+             *
+             * @method
+             * @fires lobby:application_error
+             */
             player.socket.emit("application_error", {
                 code: 30002,
                 message: "Lobby is already running"
@@ -71,8 +91,22 @@ class Lobby {
             "#" + Math.floor(Math.random()*16777215).toString(16),
             { posX: 10, posY: 10 }
         )
+
         this.#snakes.push(snake)
         player.snake = snake
+
+        /**
+         * Event that lets the client know that it successfully joined a lobby.
+         *
+         * @event lobby:lobby:joined
+         */
+
+        /**
+         * Fires the error, that indicates whether the lobby is already running.
+         *
+         * @method
+         * @fires lobby:application_error
+         */
         player.socket.emit("lobby:joined")
 
         if (this.#players.length === this.options.playerCount)
@@ -100,9 +134,18 @@ class Lobby {
     }
 
     /**
+     * Event that sends a game state to a client.
+     *
+     * @event server:sendGameState
+     * @property {GameState} gameState - The game state.
+     */
+
+    /**
      * Sends a GameState to all players of the lobby.
      *
+     * @method
      * @param gameState {GameState} - The GameState that should be send.
+     * @fires server:sendGameState
      */
     #sendGameStateToAllPlayers(gameState) {
         this.#players.forEach(player => {
@@ -131,6 +174,9 @@ class Lobby {
                 snake.playerLost = true
 
             if (this.#hasCollisionWithBounds(snake))
+                snake.playerLost = true
+
+            if (this.#hasCollisionWithItself(snake))
                 snake.playerLost = true
         })
 

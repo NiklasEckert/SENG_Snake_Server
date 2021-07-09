@@ -1,3 +1,8 @@
+/**
+ * @module server
+ */
+
+
 const Player = require("./player");
 const Lobby = require("./lobby");
 const httpServer = require("http").createServer()
@@ -12,11 +17,30 @@ const players = []
 const lobbies = []
 let lobbyCount = 0;
 
+/**
+ * Event that will be fired from socket.io if a new client connects.
+ *
+ * @event module:server~event:connection
+ * @property {socket} socket - The socket that connected.
+ */
+
+/**
+ * Listens for a new connection.
+ * @method
+ * @param {module:server~event:connection} socket - The socket that connected.
+ * @listens module:server~event:connection
+ */
 io.on("connection", socket => {
     console.log(`${socket.handshake.address} connected.`)
     let player = new Player(socket, "not_received")
     players.push(player)
 
+    /**
+     * Event that listens for the creation of a new lobby.
+     *
+     * @event module:server~event:client:createLobby
+     * @property {{playerCount: Number, size: { x: Number, y: Number}}} options - The options for the creation of a new game.
+     */
     socket.on("client:createLobby", options => {
         lobbyCount++
         const lobbyCode = generateLobbyCode()
@@ -36,6 +60,11 @@ io.on("connection", socket => {
             lobby.joinLobby(player)
     })
 
+    /**
+     * Event that listens if a client disconnected.
+     *
+     * @event module:server~event:disconnect
+     */
     socket.on("disconnect", () => {
         if (players.find(p => p.socket === socket))
             players.splice(players.findIndex(p => p.socket === socket), 1)
