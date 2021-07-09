@@ -50,12 +50,22 @@ io.on("connection", socket => {
         socket.emit("server:lobbyCreated", lobbyCode)
     })
 
-    socket.on("client:joinLobby", (lobbyCode, playerName) => {
+    /**
+     * Event that listens for a join request to a lobby.
+     *
+     * @event module:server~event:client:joinLobby
+     * @property {{playerName: String, lobbyCode: String}} joinInformation - The information to join a lobby.
+     */
+    socket.on("client:joinLobby", (joinInformation) => {
+        let info = JSON.parse(joinInformation)
+
         if (lobbies.find(lobby => lobby.players.find(lobbyPlayer => lobbyPlayer === player)))
             return
 
-        player.playerName = playerName
-        let lobby = lobbies.find(lobby => lobby.code === lobbyCode)
+        console.log(`${info.playerName} joined lobby ${info.lobbyCode}`)
+
+        player.playerName = info.playerName
+        let lobby = lobbies.find(lobby => lobby.code === info.lobbyCode)
         if (lobby)
             lobby.joinLobby(player)
     })
