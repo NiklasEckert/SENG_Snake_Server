@@ -193,17 +193,25 @@ class Lobby {
     }
 
     #hasCollisionWithOtherSnakes(snake, others) {
+        if (snake.playerLost)
+            return true
+
         let collision = false
         others.forEach(other => {
-            other.snakeParts.forEach(part => {
-                if (snake.snakeHead.posX === part.posX && snake.snakeHead.posY === part.posY)
-                    collision = true
-            })
+            if (other.snakeParts != undefined) {
+                other.snakeParts.forEach(part => {
+                    if (snake.snakeHead.posX === part.posX && snake.snakeHead.posY === part.posY)
+                        collision = true
+                })
+            }
         })
         return collision
     }
 
     #hasCollisionWithBounds(snake) {
+        if (snake.snakeHead == undefined)
+            return
+
         return snake.snakeHead.posX < 0 ||
                snake.snakeHead.posX > this.options.size.x ||
                snake.snakeHead.posY < 0 ||
