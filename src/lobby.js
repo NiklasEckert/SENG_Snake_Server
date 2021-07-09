@@ -89,7 +89,7 @@ class Lobby {
         let snake = new Snake(
             player.playerName,
             "#" + Math.floor(Math.random()*16777215).toString(16),
-            { posX: 10, posY: 10 }
+            { posX: 5 + (this.#players.length * 2), posY: 5 }
         )
 
         this.#snakes.push(snake)
