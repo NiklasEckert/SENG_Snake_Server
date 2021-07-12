@@ -40,6 +40,9 @@ class Lobby {
     constructor(code, options) {
         this.code = code
         this.options = options
+
+        console.log(`Lobby ${this.code} created with options`);
+        console.log(this.options)
     }
 
     /**
