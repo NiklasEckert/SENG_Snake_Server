@@ -6,7 +6,7 @@ const SnakePart = require("./SnakePart");
 class Snake {
 
     /** @member {boolean} - Indicates if a player has lost */
-    #playerLost
+    playerLost
 
     /**
      * Create a snake.
@@ -34,7 +34,7 @@ class Snake {
             this.snakeParts.push(new SnakePart(startPosition.posX, startPosition.posY - i))
         }
 
-        this.#playerLost = false
+        this.playerLost = false
     }
 
     /**
@@ -43,7 +43,7 @@ class Snake {
      * @param extend {boolean} - Set true if the snake should extend itself by one.
      */
     moveSnake(direction, extend) {
-        if (this.#playerLost)
+        if (this.playerLost)
             return
 
         if ((direction === Direction.NORTH && this.snakeHead.direction === Direction.SOUTH) ||
@@ -88,7 +88,7 @@ class Snake {
      * @returns {boolean}
      */
     get playerLost() {
-        return this.#playerLost
+        return this.playerLost
     }
 
     /**
@@ -96,8 +96,8 @@ class Snake {
      * @param playerLost {boolean}
      */
     set playerLost(playerLost) {
-        this.#playerLost = playerLost
-        if (this.#playerLost) {
+        this.playerLost = playerLost
+        if (this.playerLost) {
             this.snakeParts = undefined
             this.snakeHead = undefined
         }
